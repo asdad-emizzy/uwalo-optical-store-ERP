@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Optical Store &amp; ERP - Solution Architecture</title>
+  <style>
+    body { font-family: -apple-system, Segoe UI, Helvetica, Arial, sans-serif; line-height: 1.4; margin: 40px; }
+    h1 { font-size: 22px; margin-bottom: 0; }
+    .meta { color: #555; margin-top: 4px; margin-bottom: 16px; }
+    h2 { font-size: 18px; margin-top: 20px; }
+    ul { margin-top: 6px; }
+  </style>
+</head>
+<body>
+  <h1>Optical Store &amp; ERP - Solution Architecture</h1>
+  <div class="meta">Version: 0.1 (Draft) &middot; Owner: Codex CLI Assistant</div>
+
+  <h2>1. Vision &amp; Goals</h2>
+  <ul>
+    <li>Unified B2C optical storefront with integrated ERP: catalog, prescriptions, inventory, orders, warehouse, procurement, lab, CRM, analytics.</li>
+    <li>Objectives: reduce stockouts, faster fulfillment, higher conversion, accurate Rx, operational visibility.</li>
+  </ul>
+
+  <h2>2. Personas</h2>
+  <ul>
+    <li>Customer; Store associate; Optician/Lab; Warehouse; Buyer/Planner; Admin/Ops.</li>
+  </ul>
+
+  <h2>3. Scope Overview</h2>
+  <ul>
+    <li>Storefront: Catalog, search, PDP + lens builder, cart, checkout, payments, accounts.</li>
+    <li>ERP: Inventory, pricing/promos, orders, fulfillment, procurement, suppliers, warehouse, lab, CRM, reporting.</li>
+    <li>Integrations: Payments, tax, shipping, address, supplier EDI, messaging, analytics.</li>
+  </ul>
+
+  <h2>4. Architecture</h2>
+  <ul>
+    <li>Start as modular monolith; evolve into services for catalog, orders, inventory, pricing, lab, integrations.</li>
+    <li>REST APIs; internal async events via message bus.</li>
+    <li>Data: PostgreSQL (OLTP), Redis (cache/queues), Object Storage (assets).</li>
+    <li>Search: OpenSearch/Elasticsearch.</li>
+  </ul>
+
+  <h2>5. Tech Stack</h2>
+  <ul>
+    <li>Backend: Node.js (NestJS) or Python (FastAPI).</li>
+    <li>Frontend: Next.js (React).</li>
+    <li>Data: PostgreSQL, Prisma/SQLAlchemy; Redis; OpenSearch.</li>
+    <li>Infra: Docker, Terraform, CI/CD (GitHub Actions).</li>
+    <li>Observability: OpenTelemetry, Prometheus/Grafana, Sentry.</li>
+  </ul>
+
+  <h2>6. Domain Model (High-Level)</h2>
+  <ul>
+    <li>Catalog: Products, frames, lenses, variants, attributes, media.</li>
+    <li>Pricing: Price lists, promotions, coupons, tax classes.</li>
+    <li>Customers: Profiles, addresses, Rx docs, PD/seg height.</li>
+    <li>Orders: Cart, payments, shipments, returns, adjustments, status history.</li>
+    <li>Inventory: Locations, stock, reservations, movements.</li>
+    <li>Procurement: Suppliers, POs, receipts, lead times.</li>
+    <li>Warehouse: Bins, pick/pack/ship, labels, carriers.</li>
+    <li>Lab: Rx validation, lens selection, edging, QA, remakes.</li>
+  </ul>
+
+  <h2>7. Security &amp; Compliance</h2>
+  <ul>
+    <li>PII/Rx data protection; encryption in transit/at rest.</li>
+    <li>AuthN/Z: OIDC, MFA, RBAC/ABAC; least privilege.</li>
+    <li>Audit trails, data retention; GDPR/CCPA readiness.</li>
+  </ul>
+
+  <h2>8. MVP Scope</h2>
+  <ul>
+    <li>Storefront: Auth, catalog, PDP basic lenses, cart/checkout, order tracking.</li>
+    <li>ERP: Single-warehouse inventory, pricing, basic promos, order-to-ship, simple returns.</li>
+    <li>Integrations: One payment, one tax, two carriers, email.</li>
+  </ul>
+
+  <h2>9. Phased Roadmap</h2>
+  <ul>
+    <li>Phase 1: MVP + manual lab handoff.</li>
+    <li>Phase 2: Advanced pricing, multi-warehouse, procurement, RMA.</li>
+    <li>Phase 3: Lab automation, supplier EDI, analytics + CRM.</li>
+    <li>Phase 4: i18n, POS/omnichannel, B2B, service extraction.</li>
+  </ul>
+
+  <h2>10. Environments &amp; DevOps</h2>
+  <ul>
+    <li>Dev, Staging, Prod; isolated secrets/DBs; blue-green/rolling deploys.</li>
+    <li>IaC: Terraform modules; migrations and rollback strategy.</li>
+  </ul>
+
+  <h2>11. Testing &amp; Quality</h2>
+  <ul>
+    <li>Unit/integration per domain; Playwright E2E for key flows.</li>
+    <li>Security testing: authz, input validation, SSRF/CSRF/XSS.</li>
+  </ul>
+
+  <h2>12. Analytics &amp; Reporting</h2>
+  <ul>
+    <li>KPIs: Conversion, AOV, abandonment, lead time, stockouts, return rate.</li>
+    <li>Dashboards: Sales, inventory, lab throughput, supplier performance.</li>
+  </ul>
+
+  <h2>13. Integrations</h2>
+  <ul>
+    <li>Payments: Stripe/Adyen; Tax: Avalara/TaxJar; Shipping: Shippo/EasyPost.</li>
+  </ul>
+
+  <h2>14. Risks &amp; Mitigations</h2>
+  <ul>
+    <li>Lens complexity: start constrained; expand post-MVP.</li>
+    <li>Data quality: strict validation; reference data; Rx parsing.</li>
+    <li>Scope creep: MVP guardrails; phase gates; value slices.</li>
+  </ul>
+
+  <h2>15. Open Decisions</h2>
+  <ul>
+    <li>Regions/currencies; tenant model; cloud; lab at MVP or later; providers.</li>
+  </ul>
+</body>
+</html>

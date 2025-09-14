@@ -1,0 +1,152 @@
+Optical Store & ERP - Solution Architecture
+Version: 0.1 (Draft)
+Owner: Codex CLI Assistant
+
+1. Vision & Goals
+- Unified B2C optical storefront with integrated ERP: catalog, prescriptions, inventory, orders, warehouse, procurement, lab, CRM, analytics.
+- Objectives: reduce stockouts, faster fulfillment, higher conversion, accurate Rx, operational visibility.
+
+2. Personas
+- Customer; Store associate; Optician/Lab; Warehouse; Buyer/Planner; Admin/Ops.
+
+3. Scope Overview
+- Storefront: Catalog, search, PDP + lens builder, cart, checkout, payments, accounts.
+- ERP: Inventory, pricing/promos, orders, fulfillment, procurement, suppliers, warehouse, lab, CRM, reporting.
+- Integrations: Payments, tax, shipping, address, supplier EDI, messaging, analytics.
+
+4. Architecture
+Architecture Style
+- Modular monolith for MVP to keep latency low and development fast; evolve to services for Catalog, Orders, Inventory, Pricing, Lab, and Integrations as scale/teams grow.
+- Clear bounded contexts with strict module interfaces and domain events to enable future extraction without rewrites.
+
+Core Components
+- Storefront (Next.js): Product discovery, PDP with lens builder, cart/checkout, account/orders. Talks to Backend API.
+- Backend API (e.g., NestJS/FastAPI modular monolith): Domain modules expose REST endpoints and publish domain events.
+- Admin/Backoffice UI: Operates on the same Backend API with elevated scopes/roles.
+- Data Stores: PostgreSQL (OLTP); Redis (cache, queues, rate limiting); Object Storage (product media, Rx docs). Optional OpenSearch for search/facets.
+- Message/Event Layer: Outbox table + background dispatcher; optional Redis Streams/RabbitMQ for interop and future service extraction.
+
+Bounded Contexts (modules) and Responsibilities
+- Catalog: Products, frames, lens SKUs, variants, attributes, media, search indexing. Owns product tables and search sync jobs.
+- Pricing: Price lists, promotions, coupons, tax classes, price computation rules. Owns price tables and promo eligibility logic.
+- Customers: Accounts, addresses, Rx docs, PD/seg height, consents/preferences. Owns customer PII and access controls.
+- Orders: Carts, checkouts, order placement, payments orchestration, shipments association, returns initiation. Owns order state machine.
+- Payments: Provider tokens, intents, captures/refunds, webhooks (Stripe/Adyen), idempotency. Owns payment records and reconciliation.
+- Inventory: Stock levels, reservations, allocations, safety stock. Owns item availability and stock movement ledger.
+- Warehouse/Fulfillment: Bins, pick/pack/ship, labels, carriers, tracking webhooks. Owns shipments and packing data.
+- Procurement: Suppliers, POs, ASNs, receiving, costs, lead times. Owns supplier master and PO lifecycle.
+- Lab (Optical): Rx validation, lens selection, edging workflow, QA/remakes. Owns lab work orders and status.
+- Integrations: Shipping, tax, address validation, messaging; provider adapters and webhook handlers.
+
+Data Architecture
+- PostgreSQL schemas: start with single schema using module-prefixed tables (e.g., catalog_products, orders_orders); consider per-module schemas later.
+- Referential integrity with foreign keys where boundaries allow; use surrogate IDs (UUIDv7) and avoid cross-module writes outside application layer.
+- Indexing: predictable composite indexes on lookup columns (e.g., (product_id, location_id) for stock), partial indexes for active records.
+- Outbox pattern: each module writes domain events to an outbox table in the same transaction; a dispatcher publishes to the event bus.
+
+APIs (MVP surface)
+- REST, JSON, versioned under /api/v1; idempotency keys for POST on checkout, payments, and returns.
+- Catalog: GET /products, GET /products/{id}, GET /search?q=.
+- Pricing: GET /prices?sku=, POST /promotions (admin), GET /promotions.
+- Customers: POST /customers, GET /me, PUT /me, POST /me/rx, GET /me/orders.
+- Cart/Checkout: POST /carts, POST /carts/{id}/items, POST /carts/{id}/checkout, POST /checkouts/{id}/pay.
+- Orders: GET /orders/{id}, POST /orders/{id}/cancel, POST /orders/{id}/return.
+- Inventory: GET /inventory/availability?sku=&location=, POST /stock-movements (admin).
+- Fulfillment: POST /shipments (admin), GET /shipments/{id}, POST /webhooks/shipping.
+- Lab: POST /lab/work-orders (admin), GET /lab/work-orders/{id}, POST /lab/work-orders/{id}/status.
+
+Domain Events (examples)
+- catalog.product.updated, pricing.promotion.activated
+- orders.cart.checked_out, orders.order.created, orders.order.paid, orders.order.cancelled
+- payments.intent.created, payments.payment.captured, payments.refund.created
+- inventory.stock.reserved, inventory.stock.released, inventory.stock.decremented
+- fulfillment.shipment.created, fulfillment.shipment.shipped, fulfillment.tracking.updated
+- lab.work_order.created, lab.work_order.stage_changed, lab.work_order.failed
+
+Asynchronous Workflows
+- Use a job queue (Redis-based) for heavy/IO tasks: payment webhooks, search indexing, email sending, shipment label creation.
+- Ensure idempotent handlers using idempotency keys and event store deduplication.
+
+Search & Caching
+- Write-through caching for product details and availability; short TTLs and explicit busting on updates.
+- Search indexer consumes catalog.product.updated events to maintain OpenSearch documents.
+
+Security & Tenancy
+- RBAC with roles: customer, associate, optician, warehouse, buyer, admin. Fine-grained permissions per module/action.
+- Sensitive data (Rx, PII) isolated in Customers module; minimize propagation via DTOs; encrypt at rest; signed URLs for Rx docs.
+- Optional single-tenant per brand initially; design for future multi-tenant by scoping all queries with tenant_id.
+
+Observability & Reliability
+- Structured logs with correlation IDs; distributed tracing across web→API→jobs; RED/USE metrics for APIs and queues.
+- Retries with exponential backoff; circuit breakers around providers; dead-letter queues for poisoned messages.
+
+Deployment Topology (MVP)
+- Containers: frontend (Next.js), backend API, worker (jobs), Postgres, Redis, optional OpenSearch.
+- Environments: dev, staging, prod; blue/green or rolling deploys; schema migrations orchestrated in CI/CD.
+
+Repository & Module Layout (proposed)
+- /frontend (Next.js app)
+- /backend (NestJS or FastAPI)
+  - /modules
+    - catalog, pricing, customers, orders, payments, inventory, fulfillment, procurement, lab, integrations
+  - /jobs (queue processors)
+  - /config (env, DI, logging)
+  - /migrations (database)
+- /infra (IaC, compose files, deployment manifests)
+- /docs (architecture, ADRs)
+
+5. Tech Stack
+- Backend: Node.js (NestJS) or Python (FastAPI).
+- Frontend: Next.js (React).
+- Data: PostgreSQL, Prisma/SQLAlchemy; Redis; OpenSearch.
+- Infra: Docker, Terraform, CI/CD (GitHub Actions).
+- Observability: OpenTelemetry, Prometheus/Grafana, Sentry.
+
+6. Domain Model (High-Level)
+- Catalog: Products, frames, lenses, variants, attributes, media.
+- Pricing: Price lists, promotions, coupons, tax classes.
+- Customers: Profiles, addresses, Rx docs, PD/seg height.
+- Orders: Cart, payments, shipments, returns, adjustments, status history.
+- Inventory: Locations, stock, reservations, movements.
+- Procurement: Suppliers, POs, receipts, lead times.
+- Warehouse: Bins, pick/pack/ship, labels, carriers.
+- Lab: Rx validation, lens selection, edging, QA, remakes.
+
+7. Security & Compliance
+- PII/Rx data protection; encryption in transit/at rest.
+- AuthN/Z: OIDC, MFA, RBAC/ABAC; least privilege.
+- Audit trails, data retention; GDPR/CCPA readiness.
+
+8. MVP Scope
+- Storefront: Auth, catalog, PDP basic lenses, cart/checkout, order tracking.
+- ERP: Single-warehouse inventory, pricing, basic promos, order-to-ship, simple returns.
+- Integrations: One payment, one tax, two carriers, email.
+
+9. Phased Roadmap
+- Phase 1: MVP + manual lab handoff.
+- Phase 2: Advanced pricing, multi-warehouse, procurement, RMA.
+- Phase 3: Lab automation, supplier EDI, analytics + CRM.
+- Phase 4: i18n, POS/omnichannel, B2B, service extraction.
+
+10. Environments & DevOps
+- Dev, Staging, Prod; isolated secrets/DBs; blue-green/rolling deploys.
+- IaC: Terraform modules; migrations and rollback strategy.
+
+11. Testing & Quality
+- Unit/integration per domain; Playwright E2E for key flows.
+- Security testing: authz, input validation, SSRF/CSRF/XSS.
+
+12. Analytics & Reporting
+- KPIs: Conversion, AOV, abandonment, lead time, stockouts, return rate.
+- Dashboards: Sales, inventory, lab throughput, supplier performance.
+
+13. Integrations
+- Payments: Stripe/Adyen; Tax: Avalara/TaxJar; Shipping: Shippo/EasyPost.
+
+14. Risks & Mitigations
+- Lens complexity: start constrained; expand post-MVP.
+- Data quality: strict validation; reference data; Rx parsing.
+- Scope creep: MVP guardrails; phase gates; value slices.
+
+15. Open Decisions
+- Regions/currencies; tenant model; cloud; lab at MVP or later; providers.

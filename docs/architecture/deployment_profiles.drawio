@@ -1,0 +1,66 @@
+<mxfile host="app.diagrams.net" modified="2025-09-14T12:05:00Z" agent="Codex CLI" version="22.0.8">
+  <diagram id="profiles" name="Deployment Profiles">
+    <mxGraphModel dx="1280" dy="720" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- P1 -->
+        <mxCell id="p1" value="P1: Single-Process Monolith\nAPI + Jobs\nPostgres, Redis" style="swimlane;rounded=1;html=1;startSize=28;fillColor=#e1f5fe;strokeColor=#0288d1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="120" width="380" height="220" as="geometry"/>
+        </mxCell>
+        <mxCell id="p1-api" value="Backend (API+Jobs)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#1976d2;" vertex="1" parent="p1">
+          <mxGeometry x="20" y="40" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="p1-db" value="PostgreSQL" style="shape=cylinder;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="p1">
+          <mxGeometry x="240" y="40" width="120" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="p1-redis" value="Redis" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcdd2;strokeColor=#c62828;" vertex="1" parent="p1">
+          <mxGeometry x="240" y="130" width="120" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- P2 -->
+        <mxCell id="p2" value="P2: Monolith + Worker\nAPI | Worker\nManaged DB/Redis" style="swimlane;rounded=1;html=1;startSize=28;fillColor=#e8f5e9;strokeColor=#2e7d32;" vertex="1" parent="1">
+          <mxGeometry x="520" y="120" width="420" height="220" as="geometry"/>
+        </mxCell>
+        <mxCell id="p2-api" value="API" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c8e6c9;strokeColor=#2e7d32;" vertex="1" parent="p2">
+          <mxGeometry x="20" y="40" width="130" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="p2-worker" value="Worker" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1c4e9;strokeColor=#512da8;" vertex="1" parent="p2">
+          <mxGeometry x="170" y="40" width="130" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="p2-db" value="PostgreSQL (managed)" style="shape=cylinder;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="p2">
+          <mxGeometry x="320" y="40" width="80" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="p2-redis" value="Redis (managed)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcdd2;strokeColor=#c62828;" vertex="1" parent="p2">
+          <mxGeometry x="320" y="130" width="80" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- P3 -->
+        <mxCell id="p3" value="P3: Strangler Extractions\nSearch, Webhooks/Payments, Fulfillment, Lab" style="swimlane;rounded=1;html=1;startSize=28;fillColor=#fff3e0;strokeColor=#ef6c00;" vertex="1" parent="1">
+          <mxGeometry x="980" y="120" width="520" height="280" as="geometry"/>
+        </mxCell>
+        <mxCell id="p3-api" value="API (canonical)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c8e6c9;strokeColor=#2e7d32;" vertex="1" parent="p3">
+          <mxGeometry x="20" y="40" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="p3-srch" value="Search Service" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#1976d2;" vertex="1" parent="p3">
+          <mxGeometry x="180" y="40" width="120" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="p3-pay" value="Payments/Webhooks" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcdd2;strokeColor=#c62828;" vertex="1" parent="p3">
+          <mxGeometry x="310" y="40" width="140" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="p3-ship" value="Fulfillment/Shipping" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1bee7;strokeColor=#8e24aa;" vertex="1" parent="p3">
+          <mxGeometry x="180" y="100" width="150" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="p3-lab" value="Lab Service" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff59d;strokeColor=#fbc02d;" vertex="1" parent="p3">
+          <mxGeometry x="340" y="100" width="110" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="p3-bus" value="Event Bus (Redis/RabbitMQ)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0f4c3;strokeColor=#9e9d24;" vertex="1" parent="p3">
+          <mxGeometry x="20" y="120" width="140" height="50" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+

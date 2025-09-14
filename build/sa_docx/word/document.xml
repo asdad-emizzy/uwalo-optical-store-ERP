@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:w10="urn:schemas-microsoft-com:office:word" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" xmlns:wne="http://schemas.microsoft.com/office/2006/wordml" xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" mc:Ignorable="w14 wp14">
+  <w:body>
+    <w:p><w:r><w:t xml:space="preserve">Optical Store &amp; ERP - Solution Architecture</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Version: 0.1 (Draft)</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Owner: Codex CLI Assistant</w:t></w:r></w:p>
+
+    <w:p><w:r><w:t>1. Vision &amp; Goals</w:t></w:r></w:p>
+    <w:p><w:r><w:t xml:space="preserve">- Unified B2C optical storefront with integrated ERP: catalog, prescriptions, inventory, orders, warehouse, procurement, lab, CRM, analytics.</w:t></w:r></w:p>
+    <w:p><w:r><w:t xml:space="preserve">- Objectives: reduce stockouts, faster fulfillment, higher conversion, accurate Rx, operational visibility.</w:t></w:r></w:p>
+
+    <w:p><w:r><w:t>2. Personas</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Customer; Store associate; Optician/Lab; Warehouse; Buyer/Planner; Admin/Ops.</w:t></w:r></w:p>
+
+    <w:p><w:r><w:t>3. Scope Overview</w:t></w:r></w:p>
+    <w:p><w:r><w:t xml:space="preserve">- Storefront: Catalog, search, PDP + lens builder, cart, checkout, payments, accounts.</w:t></w:r></w:p>
+    <w:p><w:r><w:t xml:space="preserve">- ERP: Inventory, pricing/promos, orders, fulfillment, procurement, suppliers, warehouse, lab, CRM, reporting.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Integrations: Payments, tax, shipping, address, supplier EDI, messaging, analytics.</w:t></w:r></w:p>
+
+    <w:p><w:r><w:t>4. Architecture</w:t></w:r></w:p>
+    <w:p><w:r><w:t xml:space="preserve">- Start as modular monolith; evolve into services for catalog, orders, inventory, pricing, lab, integrations.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- REST APIs; internal async events via message bus.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Data: PostgreSQL (OLTP), Redis (cache/queues), Object Storage (assets).</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Search: OpenSearch/Elasticsearch.</w:t></w:r></w:p>
+
+    <w:p><w:r><w:t>5. Tech Stack</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Backend: Node.js (NestJS) or Python (FastAPI).</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Frontend: Next.js (React).</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Data: PostgreSQL, Prisma/SQLAlchemy; Redis; OpenSearch.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Infra: Docker, Terraform, CI/CD (GitHub Actions).</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Observability: OpenTelemetry, Prometheus/Grafana, Sentry.</w:t></w:r></w:p>
+
+    <w:p><w:r><w:t>6. Domain Model (High-Level)</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Catalog: Products, frames, lenses, variants, attributes, media.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Pricing: Price lists, promotions, coupons, tax classes.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Customers: Profiles, addresses, Rx docs, PD/seg height.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Orders: Cart, payments, shipments, returns, adjustments, status history.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Inventory: Locations, stock, reservations, movements.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Procurement: Suppliers, POs, receipts, lead times.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Warehouse: Bins, pick/pack/ship, labels, carriers.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Lab: Rx validation, lens selection, edging, QA, remakes.</w:t></w:r></w:p>
+
+    <w:p><w:r><w:t>7. Security &amp; Compliance</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- PII/Rx data protection; encryption in transit/at rest.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- AuthN/Z: OIDC, MFA, RBAC/ABAC; least privilege.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Audit trails, data retention; GDPR/CCPA readiness.</w:t></w:r></w:p>
+
+    <w:p><w:r><w:t>8. MVP Scope</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Storefront: Auth, catalog, PDP basic lenses, cart/checkout, order tracking.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- ERP: Single-warehouse inventory, pricing, basic promos, order-to-ship, simple returns.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Integrations: One payment, one tax, two carriers, email.</w:t></w:r></w:p>
+
+    <w:p><w:r><w:t>9. Phased Roadmap</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Phase 1: MVP + manual lab handoff.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Phase 2: Advanced pricing, multi-warehouse, procurement, RMA.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Phase 3: Lab automation, supplier EDI, analytics + CRM.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Phase 4: i18n, POS/omnichannel, B2B, service extraction.</w:t></w:r></w:p>
+
+    <w:p><w:r><w:t>10. Environments &amp; DevOps</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Dev, Staging, Prod; isolated secrets/DBs; blue-green/rolling deploys.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- IaC: Terraform modules; migrations and rollback strategy.</w:t></w:r></w:p>
+
+    <w:p><w:r><w:t>11. Testing &amp; Quality</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Unit/integration per domain; Playwright E2E for key flows.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Security testing: authz, input validation, SSRF/CSRF/XSS.</w:t></w:r></w:p>
+
+    <w:p><w:r><w:t>12. Analytics &amp; Reporting</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- KPIs: Conversion, AOV, abandonment, lead time, stockouts, return rate.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Dashboards: Sales, inventory, lab throughput, supplier performance.</w:t></w:r></w:p>
+
+    <w:p><w:r><w:t>13. Integrations</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Payments: Stripe/Adyen; Tax: Avalara/TaxJar; Shipping: Shippo/EasyPost.</w:t></w:r></w:p>
+
+    <w:p><w:r><w:t>14. Risks &amp; Mitigations</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Lens complexity: start constrained; expand post-MVP.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Data quality: strict validation; reference data; Rx parsing.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Scope creep: MVP guardrails; phase gates; value slices.</w:t></w:r></w:p>
+
+    <w:p><w:r><w:t>15. Open Decisions</w:t></w:r></w:p>
+    <w:p><w:r><w:t>- Regions/currencies; tenant model; cloud; lab at MVP or later; providers.</w:t></w:r></w:p>
+
+    <w:sectPr/>
+  </w:body>
+</w:document>

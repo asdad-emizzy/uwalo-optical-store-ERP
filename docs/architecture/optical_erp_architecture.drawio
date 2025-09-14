@@ -1,0 +1,110 @@
+<mxfile host="app.diagrams.net" modified="2025-09-14T12:00:00Z" agent="Codex CLI" version="22.0.8">
+  <diagram id="optical-architecture" name="Architecture">
+    <mxGraphModel dx="1434" dy="818" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Actors -->
+        <mxCell id="cust" value="Customer" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="80" y="120" width="120" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="admin" value="Admin / Backoffice" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="80" y="260" width="160" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Frontend -->
+        <mxCell id="storefront" value="Storefront\n(Next.js)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="300" y="120" width="160" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- Backend API -->
+        <mxCell id="api" value="Backend API\n(Modular Monolith: Catalog, Pricing, Customers, Orders, Payments, Inventory, Fulfillment, Procurement, Lab, Integrations)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="520" y="100" width="460" height="160" as="geometry"/>
+        </mxCell>
+
+        <!-- Worker -->
+        <mxCell id="worker" value="Worker / Jobs\n(Webhooks, Emails, Search Indexing, Labels)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="520" y="280" width="300" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Data Stores -->
+        <mxCell id="pg" value="PostgreSQL\n(OLTP)" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="520" y="420" width="140" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="redis" value="Redis\n(Cache/Queues)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="680" y="440" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="obj" value="Object Storage\n(Assets, Rx Docs)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="840" y="440" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="search" value="OpenSearch\n(Search/Facets)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6f7ff;strokeColor=#4aa3df;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="440" width="160" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Providers Group -->
+        <mxCell id="providers" value="Providers" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=24;rounded=1;html=1;fillColor=#fff4f4;strokeColor=#cc0000;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="120" width="260" height="200" as="geometry"/>
+        </mxCell>
+        <mxCell id="pay" value="Payments (Stripe/Adyen)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffdce0;strokeColor=#cc0000;" vertex="1" parent="providers">
+          <mxGeometry x="20" y="30" width="220" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="tax" value="Tax (Avalara/TaxJar)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffdce0;strokeColor=#cc0000;" vertex="1" parent="providers">
+          <mxGeometry x="20" y="90" width="220" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="ship" value="Shipping (Shippo/EasyPost)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffdce0;strokeColor=#cc0000;" vertex="1" parent="providers">
+          <mxGeometry x="20" y="150" width="220" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Event Bus / Outbox Note -->
+        <mxCell id="outbox" value="Outbox + Events\n(Redis Streams, Idempotent Handlers)" style="note;whiteSpace=wrap;html=1;fillColor=#ffff88;strokeColor=#9a9a00;" vertex="1" parent="1">
+          <mxGeometry x="840" y="280" width="220" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Edges -->
+        <mxCell id="e1" style="endArrow=block;html=1;strokeWidth=2;" edge="1" parent="1" source="cust" target="storefront">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" style="endArrow=block;html=1;strokeWidth=2;" edge="1" parent="1" source="storefront" target="api">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3" style="endArrow=block;html=1;strokeWidth=2;" edge="1" parent="1" source="admin" target="api">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e4" style="endArrow=block;html=1;strokeWidth=2;" edge="1" parent="1" source="api" target="pg">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e5" style="endArrow=block;html=1;strokeWidth=2;" edge="1" parent="1" source="api" target="redis">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e6" style="endArrow=block;html=1;strokeWidth=2;" edge="1" parent="1" source="api" target="obj">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e7" style="endArrow=block;html=1;strokeWidth=2;" edge="1" parent="1" source="api" target="search">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e8" style="endArrow=block;html=1;dashed=1;strokeWidth=2;" edge="1" parent="1" source="api" target="worker">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e9" style="endArrow=block;html=1;dashed=1;strokeWidth=2;" edge="1" parent="1" source="worker" target="ship">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Webhooks -->
+        <mxCell id="e10" value="webhooks" style="endArrow=block;html=1;strokeWidth=2;dashed=1;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="pay" target="api">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e11" value="webhooks" style="endArrow=block;html=1;strokeWidth=2;dashed=1;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="ship" target="api">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e12" value="rates/tax" style="endArrow=block;html=1;strokeWidth=2;dashed=1;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="api" target="tax">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+
